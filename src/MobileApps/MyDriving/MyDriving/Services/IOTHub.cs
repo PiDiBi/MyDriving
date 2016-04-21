@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices.Client;
 using MyDriving.Interfaces;
+using MyDriving.Utils;
 
 namespace MyDriving.Services
 {
@@ -19,8 +20,15 @@ namespace MyDriving.Services
         {
             if (string.IsNullOrWhiteSpace(connectionStr))
                 return;
-
-            deviceClient = DeviceClient.CreateFromConnectionString(connectionStr, TransportType.Http1);
+            try
+            {
+                deviceClient = DeviceClient.CreateFromConnectionString(connectionStr, TransportType.Http1);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteLine("Unable to DeviceClient.CreateFromConnectionString : " + e.Message);
+            }
+            
         }
 
         public async Task SendEvents(IEnumerable<String> blobs)

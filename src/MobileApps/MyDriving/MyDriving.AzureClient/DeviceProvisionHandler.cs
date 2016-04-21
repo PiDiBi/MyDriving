@@ -15,7 +15,7 @@ namespace MyDriving.AzureClient
 {
     public class DeviceProvisionHandler
     {
-        private const string DefaultHostName = "mydriving.azure-devices.net";
+        private const string DefaultHostName = "pidibi-2hojrxa23y36a.azure-devices.net";
         private static DeviceProvisionHandler _handler;
 
         private DeviceProvisionHandler()
@@ -65,7 +65,8 @@ namespace MyDriving.AzureClient
 
         private bool IsAcceptedChar(char c)
         {
-            List<char> accepted = new List<char>() { '-', ':', '.', '+', '%', '_', '#', '*', '?', '!', '(', ')', ',', '=', '@', ';', '$', '\'' };
+            // removed + because of https://github.com/Azure/azure-iot-sdks/issues/481
+            List<char> accepted = new List<char>() { '-', ':', '.', '%', '_', '#', '*', '?', '!', '(', ')', ',', '=', '@', ';', '$', '\'' };
             if (Char.IsLetterOrDigit(c))
                 return true;
             else if (accepted.Contains(c))
