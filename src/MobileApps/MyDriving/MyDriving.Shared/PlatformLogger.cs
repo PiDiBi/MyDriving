@@ -22,12 +22,6 @@ namespace MyDriving.Shared
             base.Identify(uid, table);
         }
 
-        public override void WriteLine(string line)
-        {
-            Debug.WriteLine(line);
-            base.WriteLine(line);
-        }
-
         public override void Identify(string uid, string key, string value)
         {
             Debug.WriteLine("Logger: Identify: " + uid + " key: " + key + " value: " + value);
@@ -44,6 +38,8 @@ namespace MyDriving.Shared
             HockeyApp.Metrics.MetricsManager.TrackEvent(trackIdentifier);
 #elif __IOS__
             HockeyApp.BITHockeyManager.SharedHockeyManager?.MetricsManager?.TrackEvent(trackIdentifier);
+#elif WINDOWS_UWP
+            Microsoft.HockeyApp.HockeyClient.Current.TrackEvent(trackIdentifier);
 #endif
             base.Track(trackIdentifier, table);
         }
@@ -55,6 +51,8 @@ namespace MyDriving.Shared
             HockeyApp.Metrics.MetricsManager.TrackEvent(trackIdentifier);
 #elif __IOS__
             HockeyApp.BITHockeyManager.SharedHockeyManager?.MetricsManager?.TrackEvent(trackIdentifier);
+#elif WINDOWS_UWP
+            Microsoft.HockeyApp.HockeyClient.Current.TrackEvent(trackIdentifier);
 #endif
             base.Track(trackIdentifier, key, value);
         }
@@ -73,24 +71,11 @@ namespace MyDriving.Shared
             return base.TrackTime(identifier, key, value);
         }
 
-        public override void Report(Exception exception = null, Severity warningLevel = Severity.Warning)
+        public override void Report(Exception exception)
         {
+            Track("Handled: " + exception.ToString());
             Debug.WriteLine("Logger: Report: " + exception);
-            base.Report(exception, warningLevel);
-        }
-
-        public override void Report(Exception exception, IDictionary extraData, Severity warningLevel = Severity.Warning)
-        {
-            Debug.WriteLine("Logger: Report: " + exception);
-
-            base.Report(exception, extraData, warningLevel);
-        }
-
-        public override void Report(Exception exception, string key, string value,
-            Severity warningLevel = Severity.Warning)
-        {
-            Debug.WriteLine("Logger: Report: " + exception + " key: " + key + " value: " + value);
-            base.Report(exception, key, value, warningLevel);
+            base.Report(exception);
         }
 
         public override Task Save()

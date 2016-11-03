@@ -9,6 +9,7 @@ using MyDriving.Helpers;
 using MyDriving.Utils;
 using Acr.UserDialogs;
 using MvvmHelpers;
+using MyDriving.Utils.Helpers;
 
 namespace MyDriving.ViewModel
 {
@@ -50,7 +51,6 @@ namespace MyDriving.ViewModel
                 await StoreManager.TripStore.RemoveAsync(trip);
 
                 Trips.Remove(trip);
-                Settings.Logout();
             }
             catch (Exception ex)
             {
@@ -61,7 +61,6 @@ namespace MyDriving.ViewModel
                 progress?.Dispose();
             }
 
-
             return true;
         }
 
@@ -70,10 +69,7 @@ namespace MyDriving.ViewModel
             if (IsBusy)
                 return;
 
-            var track = Logger.Instance.TrackTime("LoadTrips");
-            track?.Start();
-
-            var progressDialog = UserDialogs.Instance.Loading("Loading trips...", maskType: MaskType.Clear);
+            ProgressDialogManager.LoadProgressDialog("Loading trips...");
 
             try
             {
@@ -84,17 +80,18 @@ namespace MyDriving.ViewModel
                 Trips.ReplaceRange(items);
 
                 CanLoadMore = Trips.Count == 25;
+                Logger.Instance.Track("LoadTrips");
             }
             catch (Exception ex)
             {
                 Logger.Instance.Report(ex);
+                Logger.Instance.Track("Loading trips failed");
             }
             finally
             {
-                track?.Stop();
                 IsBusy = false;
 
-                progressDialog?.Dispose();
+                ProgressDialogManager.DisposeProgressDialog();
             }
 
             if (Trips.Count == 0)
@@ -112,7 +109,7 @@ namespace MyDriving.ViewModel
 
             var track = Logger.Instance.TrackTime("LoadMoreTrips");
             track?.Start();
-            var progress = UserDialogs.Instance.Loading("Loading more trips...", maskType: MaskType.Clear);
+            ProgressDialogManager.LoadProgressDialog("Loading more trips...");
 
             try
             {
@@ -132,7 +129,7 @@ namespace MyDriving.ViewModel
             {
                 track?.Stop();
                 IsBusy = false;
-                progress?.Dispose();
+                ProgressDialogManager.DisposeProgressDialog();
             }
         }
     }

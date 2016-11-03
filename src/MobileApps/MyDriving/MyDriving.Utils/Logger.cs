@@ -25,10 +25,6 @@ namespace MyDriving.Utils
 
         #region ILogger implementation
 
-        public virtual void WriteLine(string line)
-        {
-        }
-
         public virtual void Identify(string uid, IDictionary<string, string> table = null)
         {
           
@@ -60,20 +56,9 @@ namespace MyDriving.Utils
 
         }
 
-        public virtual void Report(Exception exception = null, Severity warningLevel = Severity.Warning)
+        public virtual void Report(Exception exception)
         {
  
-        }
-
-        public virtual void Report(Exception exception, IDictionary extraData, Severity warningLevel = Severity.Warning)
-        {
-           
-        }
-
-        public virtual void Report(Exception exception, string key, string value,
-            Severity warningLevel = Severity.Warning)
-        {
-            
         }
 
         public virtual Task Save()
